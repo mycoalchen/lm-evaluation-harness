@@ -157,7 +157,7 @@ class Janitor:
             print("WARNING: Janitor running in python mode")
             return self.register_contaminant_python(dirt_string)
 
-    def clean(self, dirty_string: str) -> List[str]:
+    def clean(self, dirty_string: str) -> (List[str], int):
         """Clean a string (e.g. a training set) by removing all ngrams previously
         registered as contaminants. Returns ([], 0) if there was no contamination,
         or ([], number of contaminated indices) if the string was too dirty, or
@@ -198,7 +198,9 @@ class Janitor:
             janitor_util.clean_ngram(dirt_string, self.delete_chars, self.ngram_n)
         )
 
-    def clean_cpp(self, dirty_string: str) -> List[str]:
+    # Return (cleaned chunks, number of contamination indices)
+    # Note: If there are 0 contamination indices then cleaned chunks is an empty list
+    def clean_cpp(self, dirty_string: str) -> (List[str], int):
         contamination_indices = janitor_util.clean_ngram_with_indices(
             dirty_string.encode("utf-8", errors="ignore").decode(
                 "utf-8", errors="ignore"
